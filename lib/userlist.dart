@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterlist/userdata.dart';
 import 'package:flutterlist/useritem.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:developer';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UserList extends StatefulWidget {
   @override
@@ -10,21 +10,19 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  TextEditingController Nama = TextEditingController();
-
-  TextEditingController Umur = TextEditingController();
-
-  TextEditingController Email = TextEditingController();
+  TextEditingController nama = new TextEditingController();
+  TextEditingController umur = new TextEditingController();
+  TextEditingController email = new TextEditingController();
 
   List<UserData> daftarUser = [
-    UserData("Idris", 34, "idrez.mochamad@gmail.com"),
-    UserData("Adi", 24, "adi@gmail.com"),
-    UserData("Rizal", 33, "rizal.mochamad@gmail.com"),
+    UserData("Anis", 55, "aminnn@gmail.com"),
+    UserData("Bowo", 73, "branz@gmail.com"),
+    UserData("Nowo", 60, "fudzMd@gmail.com"),
   ];
 
   String btnSimpanText = "Simpan";
   String btnUbahText = "Ubah";
-  Color btnSimpanWarna = Colors.blueAccent;
+  Color btnSimpanWarna = Colors.blue;
   Color btnUbahWarna = Colors.blueGrey;
 
   int indexDipilih = 0;
@@ -33,177 +31,173 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(5),
+        body: Column(
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(5),
                 child: TextField(
-                  controller: Nama,
-                  keyboardType: TextInputType.number,
+                  controller: nama,
                   decoration: InputDecoration(
                     labelText: "Nama",
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(5),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(5),
                 child: TextField(
-                  controller: Umur,
-                  keyboardType: TextInputType.number,
+                  controller: umur,
                   decoration: InputDecoration(
                     labelText: "Umur",
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(5),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(5),
                 child: TextField(
-                  controller: Email,
-                  keyboardType: TextInputType.number,
+                  controller: email,
                   decoration: InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(5),
-                child: ElevatedButton(
-                  onPressed: () {
-                    try {
-                      if (Nama.text.isEmpty ||
-                          Umur.text.isEmpty ||
-                          Email.text.isEmpty)
-                        throw new Exception("Isian tidak boleh kosong");
-
-                      if (btnSimpanText == "Simpan") {
-                        daftarUser.add(UserData(
-                            Nama.text, int.parse(Umur.text), Email.text));
-                      } else {
-                        UserData userData = daftarUser[indexDipilih];
-                        userData.nama = Nama.text;
-                        userData.umur = int.parse(Umur.text);
-                        userData.email = Email.text;
-
-                        btnSimpanText = "Simpan";
-                        btnSimpanWarna = Colors.blueAccent;
-                      }
-                      setState(() {
-                        UserData;
-                      });
-
-                      Nama.text = "";
-                      Umur.text = "";
-                      Email.text = "";
-                    } catch (e) {
-                      Fluttertoast.showToast(
-                        msg: '$e',
-                      );
+            ),
+            Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: () {
+                  try {
+                    if (nama.text.isEmpty ||
+                        umur.text.isEmpty ||
+                        email.text.isEmpty) {
+                      throw new Exception("Isian Tidak Boleh Kosong");
                     }
-                    inspect(daftarUser);
-                  },
-                  child: Text(btnSimpanText),
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(150, 75),
-                      backgroundColor: btnSimpanWarna),
-                ),
+                    if (btnSimpanText == "Simpan") {
+                      // Menambahkan record sebanyak jumlah umur
+                      for (int i = 0; i < int.parse(umur.text); i++) {
+                        daftarUser.add(UserData("${i + 1}. ${nama.text}",
+                            int.parse(umur.text), email.text));
+                      }
+                    } else {
+                      UserData userData = daftarUser[indexDipilih];
+                      userData.nama = nama.text;
+                      userData.umur = int.parse(umur.text);
+                      userData.email = email.text;
+
+                      btnSimpanText = "Simpan";
+                    }
+                    setState(() {
+                      daftarUser;
+                    });
+                    nama.text = "";
+                    umur.text = "";
+                    email.text = "";
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: '$e');
+                  }
+                },
+                child: Text(btnSimpanText),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(150, 75),
+                    backgroundColor: btnSimpanWarna),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Dismissible(
-                        key: ValueKey(daftarUser[index]),
-                        child: InkWell(
-                          child: UserItem(daftarUser[index]),
-                          onTap: () {
-                            Nama.text = daftarUser[index].nama;
-                            Umur.text = daftarUser[index].umur.toString();
-                            Email.text = daftarUser[index].email;
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: ValueKey(daftarUser.toString()),
+                      child: InkWell(
+                        child: UserItem(daftarUser[index]),
+                        onTap: () {
+                          nama.text = daftarUser[index].nama;
+                          umur.text = daftarUser[index].umur.toString();
+                          email.text = daftarUser[index].email;
 
-                            btnSimpanText = btnUbahText;
-                            btnSimpanWarna = btnUbahWarna;
+                          btnSimpanText = btnUbahText;
+                          btnSimpanWarna = btnUbahWarna;
 
-                            indexDipilih = index;
+                          indexDipilih = index;
 
-                            setState(() {
-                              btnSimpanText;
-                              btnSimpanWarna;
-                            });
-                          },
-                        ),
-                        background: Container(
-                          padding: EdgeInsets.only(left: 10),
-                          color: Colors.red,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        secondaryBackground: Container(
-                          padding: EdgeInsets.only(left: 10),
-                          color: Colors.white,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        onDismissed: (direction) {
-                          if (direction == DismissDirection.startToEnd) {
-                            daftarUser.removeAt(index);
-
-                            setState(() {
-                              daftarUser;
-                            });
-                          }
+                          setState(() {
+                            btnSimpanText;
+                            btnSimpanWarna;
+                          });
                         },
-                        confirmDismiss: (direction) async {
-                          if (direction == DismissDirection.startToEnd) {
-                            return await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Confirm"),
-                                  content:
-                                      const Text("Apakah yakin akan menghapus"),
-                                  actions: [
-                                    ElevatedButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(true),
-                                        child: const Text("Hapus")),
-                                    ElevatedButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(false),
-                                        child: const Text("Batal")),
-                                  ],
-                                );
-                              },
+                      ),
+                      background: Container(
+                        padding: EdgeInsets.only(left: 10),
+                        color: Colors.red,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      secondaryBackground: Container(
+                        padding: EdgeInsets.only(left: 10),
+                        color: Colors.white,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      onDismissed: (direction) {
+                        if (direction == DismissDirection.startToEnd) {
+                          daftarUser.removeAt(index);
+                          setState(() {
+                            daftarUser;
+                          });
+                        }
+                        inspect(daftarUser);
+                      },
+                      confirmDismiss: (direction) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirm"),
+                              content:
+                                  const Text("Apakah yakin akan menghapus"),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: const Text("Hapus"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text("Batal"),
+                                ),
+                              ],
                             );
-                          } else {
-                            return false;
-                          }
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(),
-                    itemCount: daftarUser.length,
-                  ),
+                          },
+                        );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
+                  itemCount: daftarUser.length,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
