@@ -81,8 +81,8 @@ class _UserListState extends State<UserList> {
                     }
                     if (btnSimpanText == "Simpan") {
                       // Menambahkan record sebanyak jumlah umur
-                      for (int i = 0; i < int.parse(umur.text); i++) {
-                        daftarUser.add(UserData("${i + 1}. ${nama.text}",
+                      for (int a = 0; a < int.parse(umur.text); a++) {
+                        daftarUser.add(UserData("${a + 1}. ${nama.text}",
                             int.parse(umur.text), email.text));
                       }
                     } else {
